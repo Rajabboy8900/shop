@@ -2,7 +2,7 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { ILike, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm'
-import { CreateProductDto } from './dto/create-product.dto';
+import { ProductCreateDto } from './dto/create-product.dto';
 import { UploadService } from '../upload/upload.service'
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -16,7 +16,7 @@ export class ProductService {
 
 
     ///////////////// product crud /////////////////
-    async createProduct(createProductDTo: CreateProductDto, files: Express.Multer.File[]) {
+    async createProduct(createProductDTo: ProductCreateDto, files: Express.Multer.File[]) {
         try {
             let imageUrls: string[] = [];
             if (files && files.length > 0) {
@@ -74,7 +74,7 @@ export class ProductService {
             }
             const updateData = {
                 ...updateProductDto,
-                image: imageUrls.length > 0 ? imageUrls.join(',') : (typeof updateProductDto.image === 'string' ? updateProductDto.image : undefined)
+                image: imageUrls.length > 0 ? imageUrls.join(',') : (typeof updateProductDto.productTitle === 'string' ? updateProductDto.productDescription : undefined)
             };
             await this.ProductRepository.update(id, updateData);
             return this.ProductRepository.findOne({ where: { id } });
@@ -102,8 +102,8 @@ export class ProductService {
         try {
             return this.ProductRepository.find({
                 where: [
-                    { title: ILike(`%${query}%`) },
-                    { description: ILike(`%${query}%`) },
+                    { productTitle: ILike(`%${query}%`) },
+                    { productDescription: ILike(`%${query}%`) },
                 ],
                 relations: ['category'],
             });

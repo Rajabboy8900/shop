@@ -2,14 +2,20 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAuthDto {
-    @ApiProperty({ example: "user@gmail.com" })
-    @IsEmail({}, { message: "Email noto'g'ri formatda!" })
-    @IsNotEmpty({ message: "Email maydoni bo'sh bo'lmasligi kerak!" })
-    @IsString({ message: "Email noto'g'ri formatda!" })
-    email: string;
+  @ApiProperty({
+    example: 'user@example.com',
+    description: 'Foydalanuvchining elektron pochta manzili',
+  })
+  @IsEmail({}, { message: "Email manzili to‘g‘ri formatda bo‘lishi kerak!" })
+  @IsNotEmpty({ message: "Email kiriting — bu maydon talab qilinadi!" })
+  @IsString({ message: "Email faqat matn ko‘rinishida bo‘lishi kerak!" })
+  email: string;
 
-    @ApiProperty({ example: "yourpassword" })
-    @IsString({ message: "Parol noto'g'ri formatda!" })
-    @IsNotEmpty({ message: "Parol maydoni bo'sh bo'lmasligi kerak!" })
-    password: string;
+  @ApiProperty({
+    example: 'MySecurePassword123',
+    description: 'Kirish uchun parol',
+  })
+  @IsString({ message: "Parol matn ko‘rinishida bo‘lishi zarur!" })
+  @IsNotEmpty({ message: "Parol bo‘sh bo‘lmasligi shart!" })
+  password: string;
 }

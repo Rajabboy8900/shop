@@ -1,22 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
-        const jwtSecret = process.env.JWT_ACCESS_SECRET;
-        if (!jwtSecret) {
-            throw new Error('JWT_ACCESS_SECRET environment variable is not set');
-        }
-        super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: jwtSecret,
-        });
+export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
+  constructor() {
+    const accessSecret = process.env.JWT_ACCESS_SECRET;
+    if (!accessSecret) {
+      throw new UnauthorizedException('JWT access token siri aniqlanmagan');
     }
 
-    async validate(payload: any) {
-        return { id: payload.id, email: payload.email, role: payload.role };
-    }
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: accessSecret,
+    });
+  }
 
+  async validate(payload: { id: string; email: string; role: string }) {
+    return {
+      userId: payload.id,
+      emailAddress: payload.email,
+      userRole: payload.role,
+    };
+  }
 }
